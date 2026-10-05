@@ -2,8 +2,10 @@
 
 declare(strict_types=1);
 
+use function App\Config\env;
+
 return [
     'name' => 'Simple PHP Blog',
-    'env' => $_ENV['APP_ENV'] ?? getenv('APP_ENV') ?: 'local',
-    'url' => $_ENV['APP_URL'] ?? getenv('APP_URL') ?: 'http://localhost:8080',
+    'env' => env('APP_ENV', 'local'),
+    'url' => env('APP_URL', 'http://localhost:8080'),
 ];

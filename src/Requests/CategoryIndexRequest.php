@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Requests;
 
 use App\DTO\CategoryIndexDto;
-use App\Exceptions\ValidationException;
+use App\Framework\Exceptions\ValidationException;
 use Psr\Http\Message\ServerRequestInterface;
 
 final class CategoryIndexRequest

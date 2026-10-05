@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\DTO\{ArticlePageDto, CategoryPageDto, PaginationDto};
-use App\Exceptions\NotFoundException;
+use App\Framework\Exceptions\NotFoundException;
 use App\Repository\{ArticleRepositoryInterface, CategoryRepositoryInterface};
 
 final class BlogService

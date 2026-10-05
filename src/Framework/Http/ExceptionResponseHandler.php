@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Framework\Http;
 
-use App\Exceptions\{NotFoundException, ValidationException};
+use App\Framework\Exceptions\{NotFoundException, ValidationException};
 use App\View\PhpView;
 use Psr\Http\Message\ResponseInterface;
 use RuntimeException;

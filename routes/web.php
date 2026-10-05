@@ -2,4 +2,12 @@
 
 declare(strict_types=1);
 
-// Маршруты регистрируются в Kernel через собственный App\\Http\\Router.
+use App\Controller\{ArticleController, CategoryController, HomeController};
+use App\DI\Container;
+use App\Http\Router;
+
+return static function (Router $router, Container $container): void {
+    $router->get('/', $container->get(HomeController::class));
+    $router->get('/category/{slug}', $container->get(CategoryController::class));
+    $router->get('/article/{slug}', $container->get(ArticleController::class));
+};

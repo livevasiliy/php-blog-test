@@ -4,12 +4,13 @@
   "type": "project",
   "require": {
     "php": ">=8.1",
-    "psr/container": "^2.0"
+    "ext-pdo": "*"
   },
   "autoload": {
     "psr-4": {
       "App\\": "src/",
-      "Database\\": "database/"
+      "Database\\": "database/",
+      "Psr\\": "src/Psr/"
     }
   },
   "scripts": {

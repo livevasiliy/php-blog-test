@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Requests;
+namespace App\Exceptions;
 
 use RuntimeException;
 
@@ -12,6 +12,7 @@ final class ValidationException extends RuntimeException
     {
         parent::__construct('Validation failed');
     }
+
     public function errors(): array
     {
         return $this->errors;

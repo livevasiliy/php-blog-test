@@ -24,7 +24,7 @@ final class ExceptionResponseHandler
             $exception instanceof ValidationException => $this->render('pages/422', ['errors' => $exception->errors()], 422),
             $exception instanceof NotFoundException,
             $exception instanceof RuntimeException && $exception->getCode() === 404 => $this->render('pages/404', [], 404),
-            default => $this->html->create('<h1>500 Internal Server Error</h1>', 500),
+            default => $this->render('pages/500', [], 500),
         };
     }
 

@@ -1,0 +1,37 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+require dirname(__DIR__) . '/vendor/autoload.php';
+
+use Doctrine\DBAL\DriverManager;
+use Doctrine\Migrations\Configuration\Connection\ExistingConnection;
+use Doctrine\Migrations\Configuration\Migration\PhpFile;
+use Doctrine\Migrations\DependencyFactory;
+use Doctrine\Migrations\Tools\Console\Command;
+use Symfony\Component\Console\Application;
+
+$config = require dirname(__DIR__) . '/config/database.php';
+$connection = DriverManager::getConnection([
+    'dbname' => $config['database'],
+    'user' => $config['username'],
+    'password' => $config['password'],
+    'host' => $config['host'],
+    'port' => $config['port'],
+    'driver' => 'pdo_mysql',
+    'charset' => $config['charset'],
+]);
+
+$dependencyFactory = DependencyFactory::fromConnection(
+    new PhpFile(dirname(__DIR__) . '/migrations.php'),
+    new ExistingConnection($connection),
+);
+
+$application = new Application('Blog migrations');
+$application->addCommands([
+    new Command\MigrateCommand($dependencyFactory),
+    new Command\StatusCommand($dependencyFactory),
+    new Command\ListCommand($dependencyFactory),
+]);
+$application->run();

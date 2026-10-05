@@ -37,4 +37,4 @@ spl_autoload_register(static function (string $class): void {
     }
 });
 
-require_once __DIR__ . '/../src/Config/helpers.php';
+require_once __DIR__ . '/../src/Framework/Config/helpers.php';

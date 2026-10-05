@@ -12,7 +12,7 @@ use App\Framework\Providers\ServiceProvider;
 use App\Requests\CategoryIndexRequest;
 use App\Repository\{ArticleRepositoryInterface, CategoryRepositoryInterface, PostgresArticleRepository, PostgresCategoryRepository};
 use App\Service\BlogService;
-use App\Framework\View\{AssetManager, PhpView};
+use App\Framework\View\{AssetManager, PhpView, ViewResponseFactory};
 use PDO;
 
 final class ApplicationServiceProvider implements ServiceProvider
@@ -37,6 +37,7 @@ final class ApplicationServiceProvider implements ServiceProvider
         $container->singleton(PDO::class, fn (): PDO => $this->createConnection($database));
         $container->singleton(AssetManager::class, static fn (): AssetManager => new AssetManager($rootDir . '/public/build'));
         $container->singleton(PhpView::class, static fn (Container $c): PhpView => new PhpView($rootDir . '/templates', $c->get(AssetManager::class)));
+        $container->singleton(ViewResponseFactory::class, static fn (Container $c): ViewResponseFactory => new ViewResponseFactory($c->get(PhpView::class), $c->get(HtmlResponseFactory::class)));
         $container->singleton(PostgresCategoryRepository::class, static fn (Container $c): PostgresCategoryRepository => new PostgresCategoryRepository($c->get(PDO::class)));
         $container->singleton(PostgresArticleRepository::class, static fn (Container $c): PostgresArticleRepository => new PostgresArticleRepository($c->get(PDO::class)));
         $container->singleton(CategoryRepositoryInterface::class, static fn (Container $c): CategoryRepositoryInterface => $c->get(PostgresCategoryRepository::class));

@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Framework\Http\HtmlResponseFactory;
 use App\Requests\CategoryIndexRequest;
 use App\Service\BlogService;
-use App\Framework\View\PhpView;
+use App\Framework\View\ViewResponseFactory;
 use Psr\Http\Message\{ResponseInterface, ServerRequestInterface};
 use Psr\Http\Server\RequestHandlerInterface;
 
@@ -15,15 +14,14 @@ final class CategoryController implements RequestHandlerInterface
 {
     public function __construct(
         private readonly BlogService $blog,
-        private readonly PhpView $view,
         private readonly CategoryIndexRequest $request,
-        private readonly HtmlResponseFactory $html,
+        private readonly ViewResponseFactory $views,
     ) {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $page = $this->blog->category((string) $request->getAttribute('slug'), $this->request->data($request));
-        return $this->html->create($this->view->render('pages/category', ['page' => $page]));
+        return $this->views->create('pages/category', ['page' => $page]);
     }
 }

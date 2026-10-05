@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Framework\Http;
 
 use App\Framework\Exceptions\{NotFoundException, ValidationException};
-use App\Framework\View\PhpView;
+use App\Framework\View\ViewResponseFactory;
 use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
 use Throwable;
@@ -13,8 +13,7 @@ use Throwable;
 final class ExceptionResponseHandler
 {
     public function __construct(
-        private readonly HtmlResponseFactory $html,
-        private readonly PhpView $view,
+        private readonly ViewResponseFactory $views,
     ) {
     }
 
@@ -30,6 +29,6 @@ final class ExceptionResponseHandler
 
     private function render(string $template, array $data, int $status): ResponseInterface
     {
-        return $this->html->create($this->view->render($template, $data), $status);
+        return $this->views->create($template, $data, $status);
     }
 }

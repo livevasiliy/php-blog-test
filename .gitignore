@@ -1,0 +1,9 @@
+/vendor/
+/node_modules/
+/.idea/
+/.env
+/public/build/
+/.php-cs-fixer.cache
+/storage/cache/*
+/storage/compile/*
+!.gitkeep

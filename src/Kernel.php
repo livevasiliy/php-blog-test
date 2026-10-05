@@ -7,7 +7,7 @@ namespace App;
 use App\Framework\DI\Container;
 use App\Framework\Http\{ResponseEmitter, Router, ServerRequestFactory};
 use App\Framework\Http\Middleware\{ErrorMiddleware, MiddlewareStack};
-use App\Providers\{ApplicationServiceProvider, RouteServiceProvider};
+use App\Providers\{BlogServiceProvider, ControllerServiceProvider, HttpServiceProvider, RepositoryServiceProvider, RouteServiceProvider, ViewServiceProvider};
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
@@ -34,7 +34,11 @@ final class Kernel
     private function registerProviders(): void
     {
         $providers = [
-            new ApplicationServiceProvider($this->rootDir),
+            new HttpServiceProvider(),
+            new ViewServiceProvider($this->rootDir),
+            new RepositoryServiceProvider($this->rootDir),
+            new BlogServiceProvider(),
+            new ControllerServiceProvider(),
             new RouteServiceProvider($this->rootDir),
         ];
 

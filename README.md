@@ -28,7 +28,7 @@ PSR-7 and PSR-15 contracts and their runtime implementations are maintained loca
 
 ## Application providers and routes
 
-The kernel loads service providers from `src/Providers`. Application bindings live in `ApplicationServiceProvider`, while `RouteServiceProvider` loads `routes/web.php`. Add HTTP routes in that file through the injected `Router` and resolve dependencies through the injected `Container`.
+The kernel loads focused service providers from `src/Providers`: HTTP, views, repositories, blog services, controllers and routes are registered separately. Add HTTP routes in `routes/web.php` through the injected `Router` and resolve dependencies through the injected `Container`.
 
 ## Database migrations
 

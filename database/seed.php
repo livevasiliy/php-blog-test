@@ -1,10 +1,20 @@
 <?php
 
 declare(strict_types=1);
-require dirname(__DIR__) . '/vendor/autoload.php';
-Dotenv\Dotenv::createImmutable(dirname(__DIR__))->safeLoad();
-$config = require dirname(__DIR__) . '/config/database.php';
-$db = Doctrine\DBAL\DriverManager::getConnection(['dbname' => $config['database'], 'user' => $config['username'], 'password' => $config['password'], 'host' => $config['host'], 'port' => $config['port'], 'driver' => 'pdo_pgsql']);
-$categories = (new Database\Seeders\CategorySeeder($db))->run();
-(new Database\Seeders\ArticleSeeder($db))->run($categories);
-echo "Database seeded successfully.\n";
+
+$root = dirname(__DIR__);
+require $root . '/vendor/autoload.php';
+require $root . '/bootstrap.php';
+$config = require $root . '/config/database.php';
+$db = new PDO(sprintf('pgsql:host=%s;port=%d;dbname=%s', $config['host'], $config['port'], $config['database']), $config['username'], $config['password'], [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+$db->beginTransaction();
+try {
+    $categories = (new Database\Seeders\CategorySeeder($db))->run();
+    (new Database\Seeders\ArticleSeeder($db))->run($categories);
+    $db->commit();
+    echo "Database seeded successfully.\n";
+} catch (Throwable $exception) {
+    $db->rollBack();
+    fwrite(STDERR, $exception->getMessage() . "\n");
+    exit(1);
+}

@@ -5,94 +5,71 @@ declare(strict_types=1);
 namespace App;
 
 use App\Controller\{ArticleController, CategoryController, HomeController};
+use App\DI\Container;
+use App\Http\{Request, Response, Router};
+use App\Requests\CategoryIndexRequest;
 use App\Repository\{ArticleRepositoryInterface, CategoryRepositoryInterface, PostgresArticleRepository, PostgresCategoryRepository};
 use App\Service\BlogService;
-use App\View\SmartyView;
-use Dotenv\Dotenv;
-use Smarty;
-use Doctrine\DBAL\{Connection, DriverManager};
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Contracts\Cache\CacheInterface;
-use Symfony\Component\Cache\Adapter\FilesystemAdapter;
-use Symfony\Component\HttpFoundation\{Request, Response};
-use Symfony\Component\Routing\{RequestContext, RouteCollection};
-use Symfony\Component\Routing\Matcher\UrlMatcher;
-use Symfony\Component\Routing\Exception\ResourceNotFoundException;
-use Symfony\Component\Validator\Validation;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
+use App\View\{AssetManager, PhpView};
+use PDO;
+use RuntimeException;
 
 final class Kernel
 {
-    private ContainerBuilder $container;
+    private Container $container;
+    private Router $router;
 
     public function __construct(private readonly string $rootDir)
     {
-        Dotenv::createImmutable($this->rootDir)->safeLoad();
         $this->container = $this->buildContainer();
+        $this->router = $this->buildRouter();
     }
 
     public function handle(?Request $request = null): void
     {
-        $request ??= Request::createFromGlobals();
-        $routes = require $this->rootDir . '/routes/web.php';
-        $context = (new RequestContext())->fromRequest($request);
-
         try {
-            $attributes = (new UrlMatcher($routes, $context))->match($request->getPathInfo());
-            $controller = $this->container->get($attributes['_controller'][0]);
-            $action = $attributes['_controller'][1];
-            unset($attributes['_route'], $attributes['_controller']);
-            $response = $controller->{$action}(...array_values($attributes));
-        } catch (ResourceNotFoundException) {
-            $response = new Response('<h1>404 Not Found</h1>', Response::HTTP_NOT_FOUND);
+            ($this->router->dispatch($request ?? Request::fromGlobals()))->send();
+        } catch (RuntimeException $exception) {
+            $status = $exception->getCode() === 404 ? 404 : 500;
+            (new Response($status === 404 ? '<h1>404 Not Found</h1>' : '<h1>500 Internal Server Error</h1>', $status))->send();
         }
-
-        if (!$response instanceof Response) {
-            throw new \RuntimeException('A controller must return a Symfony Response.');
-        }
-        $response->send();
     }
 
-    private function buildContainer(): ContainerBuilder
+    private function buildContainer(): Container
     {
-        $app = require $this->rootDir . '/config/app.php';
+        $container = new Container();
         $database = require $this->rootDir . '/config/database.php';
-        $smarty = require $this->rootDir . '/config/smarty.php';
-        $builder = new ContainerBuilder();
-        $builder->register(Request::class, Request::class)->setFactory([Request::class, 'createFromGlobals'])->setPublic(true);
-        $builder->register(Connection::class, Connection::class)->setFactory([self::class, 'createConnection'])->setArguments([$database])->setPublic(true);
-        $builder->register(ValidatorInterface::class, ValidatorInterface::class)->setFactory([self::class, 'createValidator'])->setPublic(true);
-        $builder->register(FilesystemAdapter::class, FilesystemAdapter::class)->setArguments(['blog', 3600, $this->rootDir . '/storage/cache'])->setPublic(true);
-        $builder->setAlias(CacheInterface::class, FilesystemAdapter::class)->setPublic(true);
-        $builder->register(Smarty::class, Smarty::class)->setFactory([self::class, 'createSmarty'])->setArguments([$this->rootDir, $smarty])->setPublic(true);
-        $builder->register(\App\View\AssetManager::class)->setAutowired(true)->setArguments([$this->rootDir . '/public/build'])->setPublic(true);
-        $builder->register(SmartyView::class)->setAutowired(true)->setPublic(true);
-        $builder->register(PostgresCategoryRepository::class)->setAutowired(true)->setPublic(true);
-        $builder->register(PostgresArticleRepository::class)->setAutowired(true)->setPublic(true);
-        $builder->setAlias(CategoryRepositoryInterface::class, PostgresCategoryRepository::class)->setPublic(true);
-        $builder->setAlias(ArticleRepositoryInterface::class, PostgresArticleRepository::class)->setPublic(true);
-        foreach ([BlogService::class, HomeController::class, CategoryController::class, ArticleController::class, \App\Requests\CategoryIndexRequest::class] as $service) {
-            $builder->register($service)->setAutowired(true)->setPublic(true);
+        $container->singleton(Request::class, fn (): Request => Request::fromGlobals());
+        $container->singleton(CategoryIndexRequest::class, fn (Container $c): CategoryIndexRequest => new CategoryIndexRequest($c->get(Request::class)));
+        $container->singleton(PDO::class, fn (): PDO => $this->createConnection($database));
+        $container->singleton(AssetManager::class, fn (): AssetManager => new AssetManager($this->rootDir . '/public/build'));
+        $container->singleton(PhpView::class, fn (Container $c): PhpView => new PhpView($this->rootDir . '/templates', $c->get(AssetManager::class)));
+        $container->singleton(PostgresCategoryRepository::class, fn (Container $c): PostgresCategoryRepository => new PostgresCategoryRepository($c->get(PDO::class)));
+        $container->singleton(PostgresArticleRepository::class, fn (Container $c): PostgresArticleRepository => new PostgresArticleRepository($c->get(PDO::class)));
+        $container->singleton(CategoryRepositoryInterface::class, fn (Container $c): CategoryRepositoryInterface => $c->get(PostgresCategoryRepository::class));
+        $container->singleton(ArticleRepositoryInterface::class, fn (Container $c): ArticleRepositoryInterface => $c->get(PostgresArticleRepository::class));
+        $container->singleton(BlogService::class, fn (Container $c): BlogService => new BlogService($c->get(CategoryRepositoryInterface::class), $c->get(ArticleRepositoryInterface::class)));
+        foreach ([HomeController::class, CategoryController::class, ArticleController::class] as $controller) {
+            $container->singleton($controller, fn (Container $c) => $c->autowire($controller));
         }
-        $builder->compile();
-        return $builder;
+        return $container;
     }
 
-    public static function createConnection(array $config): Connection
+    private function buildRouter(): Router
     {
-        return DriverManager::getConnection(['dbname' => $config['database'], 'user' => $config['username'], 'password' => $config['password'], 'host' => $config['host'], 'port' => $config['port'], 'driver' => 'pdo_pgsql']);
+        $router = new Router();
+        $router->get('/', [$this->container->get(HomeController::class), 'index']);
+        $router->get('/category/{slug}', [$this->container->get(CategoryController::class), 'show']);
+        $router->get('/article/{slug}', [$this->container->get(ArticleController::class), 'show']);
+        return $router;
     }
 
-    public static function createValidator(): ValidatorInterface
+    private function createConnection(array $config): PDO
     {
-        return Validation::createValidatorBuilder()->enableAttributeMapping()->getValidator();
-    }
-
-    public static function createSmarty(string $root, array $config): Smarty
-    {
-        $engine = new Smarty();
-        $engine->setTemplateDir($root . '/' . $config['template_dir'])->setCompileDir($root . '/' . $config['compile_dir'])->setCacheDir($root . '/' . $config['cache_dir']);
-        $engine->assign('appName', 'Simple PHP Blog');
-        return $engine;
+        $dsn = sprintf('pgsql:host=%s;port=%d;dbname=%s', $config['host'], $config['port'], $config['database']);
+        return new PDO($dsn, $config['username'], $config['password'], [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        ]);
     }
 }

@@ -1,15 +1,14 @@
 # Simple PHP MVC Blog
 
-Plain PHP 8.1+ MVC blog using Smarty, Symfony Components, Doctrine DBAL, PostgreSQL and Vite.
+Plain PHP 8.1+ MVC blog using PDO, PostgreSQL and Vite.
 
 ## Local Docker setup
 
 ```bash
 cp .env.example .env
 docker compose build app
-docker compose run --rm app composer install
 docker compose up -d
-docker compose exec app composer migrate
+docker compose exec app php bin/migrations
 docker compose exec app php database/seed.php
 docker compose run --rm vite npm run build
 ```
@@ -18,28 +17,20 @@ Open http://localhost:8080.
 
 Set `APP_PORT` in `.env` when port 8080 is already occupied.
 
-The application uses Symfony HttpFoundation, Routing, DependencyInjection, Validator and Cache as independent components. It does not use Symfony Framework.
-
-PostgreSQL is used through Doctrine DBAL and the `pdo_pgsql` driver.
+The application uses only native PHP code for HTTP, routing, dependency injection, validation, views and database access. PostgreSQL is accessed through the native `pdo_pgsql` driver.
 
 ## Database migrations
 
 ```bash
-composer migrate
-composer migration-status
-composer seed
+php bin/migrations
+php database/seed.php
 ```
 
-Schema changes are versioned with Doctrine Migrations. Run migrations before seeding.
+SQL migrations are kept in `database/migrations` and are applied by the small native-PHP runner.
 
 ## Code style
 
-```bash
-composer cs:check
-composer cs:fix
-```
-
-PHP-CS-Fixer is configured with PSR-12 rules in `.php-cs-fixer.dist.php`.
+Code follows PSR-12 formatting manually; runtime does not require a code-style package.
 
 ## Frontend
 
@@ -49,4 +40,4 @@ npm run dev
 npm run build
 ```
 
-The production CSS manifest is read by `App\View\AssetManager` and injected into Smarty layouts.
+The production CSS manifest is read by `App\View\AssetManager` and injected into native PHP layouts.

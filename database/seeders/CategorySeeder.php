@@ -4,20 +4,24 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use Doctrine\DBAL\Connection;
+use PDO;
 
 final class CategorySeeder
 {
-    public function __construct(private readonly Connection $db)
+    public function __construct(private readonly PDO $db)
     {
     }
+
     public function run(): array
     {
-        $rows = [['name' => 'PHP', 'slug' => 'php', 'description' => 'Практика разработки на PHP.'], ['name' => 'Базы данных', 'slug' => 'databases', 'description' => 'SQL, проектирование и оптимизация баз данных.'], ['name' => 'DevOps', 'slug' => 'devops', 'description' => 'Контейнеры, окружение и процессы доставки.']];
+        $rows = [['PHP', 'php', 'Практика разработки на PHP.'], ['Базы данных', 'databases', 'SQL, проектирование и оптимизация баз данных.'], ['DevOps', 'devops', 'Контейнеры, окружение и процессы доставки.']];
         $ids = [];
-        foreach ($rows as $row) {
-            $this->db->executeStatement('INSERT INTO categories (name, slug, description) VALUES (?, ?, ?) ON CONFLICT (slug) DO UPDATE SET name = EXCLUDED.name, description = EXCLUDED.description', array_values($row));
-            $ids[$row['slug']] = (int) $this->db->fetchOne('SELECT id FROM categories WHERE slug = ?', [$row['slug']]);
+        $statement = $this->db->prepare('INSERT INTO categories (name, slug, description) VALUES (:name, :slug, :description) ON CONFLICT (slug) DO UPDATE SET name = EXCLUDED.name, description = EXCLUDED.description');
+        foreach ($rows as [$name, $slug, $description]) {
+            $statement->execute(['name' => $name, 'slug' => $slug, 'description' => $description]);
+            $find = $this->db->prepare('SELECT id FROM categories WHERE slug = :slug');
+            $find->execute(['slug' => $slug]);
+            $ids[$slug] = (int) $find->fetchColumn();
         }
         return $ids;
     }

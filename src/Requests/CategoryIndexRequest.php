@@ -5,29 +5,31 @@ declare(strict_types=1);
 namespace App\Requests;
 
 use App\DTO\CategoryIndexDto;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
+use App\Http\Request;
 
 final class CategoryIndexRequest
 {
-    public function __construct(private readonly Request $httpRequest, private readonly ValidatorInterface $validator)
+    public function __construct(private readonly Request $httpRequest)
     {
     }
     public function data(): array
     {
-        $dto = new CategoryIndexDto(
-            (string) $this->httpRequest->query->get('sort', 'published_at'),
-            (string) $this->httpRequest->query->get('direction', 'desc'),
-            (int) $this->httpRequest->query->get('page', 1),
-        );
-        $violations = $this->validator->validate($dto);
-        if (count($violations) > 0) {
-            $errors = [];
-            foreach ($violations as $violation) {
-                $errors[$violation->getPropertyPath()][] = $violation->getMessage();
-            }
+        $sort = (string) $this->httpRequest->query('sort', 'published_at');
+        $direction = (string) $this->httpRequest->query('direction', 'desc');
+        $page = filter_var($this->httpRequest->query('page', 1), FILTER_VALIDATE_INT);
+        $errors = [];
+        if (!in_array($sort, ['published_at', 'views_count'], true)) {
+            $errors['sort'][] = 'Допустимая сортировка: published_at или views_count.';
+        }
+        if (!in_array($direction, ['asc', 'desc'], true)) {
+            $errors['direction'][] = 'Допустимое направление: asc или desc.';
+        }
+        if ($page === false || $page < 1) {
+            $errors['page'][] = 'Страница должна быть положительным числом.';
+        }
+        if ($errors) {
             throw new ValidationException($errors);
         }
-        return ['sort' => $dto->sort, 'direction' => $dto->direction, 'page' => $dto->page];
+        return ['sort' => $sort, 'direction' => $direction, 'page' => $page];
     }
 }

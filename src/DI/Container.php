@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace App\DI;
 
+use Psr\Container\ContainerInterface;
 use ReflectionClass;
 use RuntimeException;
 
-final class Container
+final class Container implements ContainerInterface
 {
     private array $bindings = [];
     private array $instances = [];

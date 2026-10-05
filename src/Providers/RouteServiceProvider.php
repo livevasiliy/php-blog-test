@@ -6,6 +6,7 @@ namespace App\Providers;
 
 use App\Framework\DI\Container;
 use App\Framework\Http\Router;
+use App\Framework\Providers\ServiceProvider;
 use RuntimeException;
 
 final class RouteServiceProvider implements ServiceProvider

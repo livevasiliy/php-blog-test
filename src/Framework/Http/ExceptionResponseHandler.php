@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Framework\Http;
 
 use App\Framework\Exceptions\{NotFoundException, ValidationException};
-use App\View\PhpView;
+use App\Framework\View\PhpView;
 use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
 use Throwable;

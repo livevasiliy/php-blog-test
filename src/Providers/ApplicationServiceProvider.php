@@ -8,10 +8,11 @@ use App\Controller\{ArticleController, CategoryController, HomeController};
 use App\Framework\DI\Container;
 use App\Framework\Http\{ExceptionResponseHandler, HtmlResponseFactory, ResponseEmitter, ResponseFactory, ServerRequestFactory, StreamFactory};
 use App\Framework\Http\Middleware\ErrorMiddleware;
+use App\Framework\Providers\ServiceProvider;
 use App\Requests\CategoryIndexRequest;
 use App\Repository\{ArticleRepositoryInterface, CategoryRepositoryInterface, PostgresArticleRepository, PostgresCategoryRepository};
 use App\Service\BlogService;
-use App\View\{AssetManager, PhpView};
+use App\Framework\View\{AssetManager, PhpView};
 use PDO;
 
 final class ApplicationServiceProvider implements ServiceProvider

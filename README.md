@@ -24,7 +24,7 @@ Set `APP_PORT` in `.env` when port 8080 is already occupied.
 
 The application uses only native PHP code for HTTP, routing, dependency injection, validation, views and database access. PostgreSQL is accessed through the native `pdo_pgsql` driver.
 
-PSR-7 and PSR-15 contracts and their runtime implementations are maintained locally under `src/Psr` and `src/Http`; the application has no external Composer packages.
+PSR-7 and PSR-15 contracts and their runtime implementations are maintained locally under `src/Framework/Psr` and `src/Framework/Http`; the application has no external Composer packages.
 
 ## Application providers and routes
 

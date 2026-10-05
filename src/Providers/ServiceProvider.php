@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
-use App\DI\Container;
+use App\Framework\DI\Container;
 
 interface ServiceProvider
 {

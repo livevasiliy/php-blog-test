@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Middleware;
+namespace App\Framework\Http\Middleware;
 
-use App\Http\ExceptionResponseHandler;
+use App\Framework\Http\ExceptionResponseHandler;
 use Psr\Http\Message\{ServerRequestInterface, ResponseInterface};
 use Psr\Http\Server\{MiddlewareInterface, RequestHandlerInterface};
 use Throwable;

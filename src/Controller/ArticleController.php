@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Service\BlogService;
-use App\Http\HtmlResponseFactory;
+use App\Framework\Http\HtmlResponseFactory;
 use App\View\PhpView;
 use Psr\Http\Message\{ResponseInterface, ServerRequestInterface};
 use Psr\Http\Server\RequestHandlerInterface;

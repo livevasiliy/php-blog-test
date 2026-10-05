@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App;
 
-use App\DI\Container;
-use App\Http\{ResponseEmitter, Router, ServerRequestFactory};
-use App\Http\Middleware\{ErrorMiddleware, MiddlewareStack};
+use App\Framework\DI\Container;
+use App\Framework\Http\{ResponseEmitter, Router, ServerRequestFactory};
+use App\Framework\Http\Middleware\{ErrorMiddleware, MiddlewareStack};
 use App\Providers\{ApplicationServiceProvider, RouteServiceProvider};
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;

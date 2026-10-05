@@ -10,7 +10,7 @@
     "psr-4": {
       "App\\": "src/",
       "Database\\": "database/",
-      "Psr\\": "src/Psr/"
+      "Psr\\": "src/Framework/Psr/"
     }
   },
   "scripts": {

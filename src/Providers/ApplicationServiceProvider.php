@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\Controller\{ArticleController, CategoryController, HomeController};
-use App\DI\Container;
-use App\Http\{ExceptionResponseHandler, HtmlResponseFactory, ResponseEmitter, ResponseFactory, ServerRequestFactory, StreamFactory};
-use App\Http\Middleware\ErrorMiddleware;
+use App\Framework\DI\Container;
+use App\Framework\Http\{ExceptionResponseHandler, HtmlResponseFactory, ResponseEmitter, ResponseFactory, ServerRequestFactory, StreamFactory};
+use App\Framework\Http\Middleware\ErrorMiddleware;
 use App\Requests\CategoryIndexRequest;
 use App\Repository\{ArticleRepositoryInterface, CategoryRepositoryInterface, PostgresArticleRepository, PostgresCategoryRepository};
 use App\Service\BlogService;

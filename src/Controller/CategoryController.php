@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Http\HtmlResponseFactory;
+use App\Framework\Http\HtmlResponseFactory;
 use App\Requests\CategoryIndexRequest;
 use App\Service\BlogService;
 use App\View\PhpView;

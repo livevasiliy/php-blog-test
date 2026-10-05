@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\DI;
+namespace App\Framework\DI;
 
 use Psr\Container\ContainerInterface;
 use ReflectionClass;

@@ -8,8 +8,8 @@ services:
       DB_HOST: db
       DB_PORT: 5432
       DB_DATABASE: ${DB_DATABASE:-blog}
-      DB_USERNAME: ${DB_USERNAME:-blog}
-      DB_PASSWORD: ${DB_PASSWORD:-blog}
+      DB_USERNAME: ${DB_USERNAME:?DB_USERNAME must be set in .env}
+      DB_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD must be set in .env}
     volumes:
       - ./:/var/www/html
     depends_on:
@@ -27,14 +27,12 @@ services:
     image: postgres:16-alpine
     environment:
       POSTGRES_DB: ${DB_DATABASE:-blog}
-      POSTGRES_USER: ${DB_USERNAME:-blog}
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-blog}
-    ports:
-      - "5433:5432"
+      POSTGRES_USER: ${DB_USERNAME:?DB_USERNAME must be set in .env}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD must be set in .env}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $${DB_USERNAME:-blog} -d $${DB_DATABASE:-blog}"]
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       interval: 5s
       timeout: 5s
       retries: 20
@@ -43,7 +41,7 @@ services:
     working_dir: /var/www/html
     command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
     ports:
-      - "5173:5173"
+      - "127.0.0.1:5173:5173"
     volumes:
       - ./:/var/www/html
 

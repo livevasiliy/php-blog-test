@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App;
 
 use App\Controller\{ArticleController, CategoryController, HomeController};
-use App\Repository\{ArticleRepositoryInterface, CategoryRepositoryInterface, MySqlArticleRepository, MySqlCategoryRepository};
+use App\Repository\{ArticleRepositoryInterface, CategoryRepositoryInterface, PostgresArticleRepository, PostgresCategoryRepository};
 use App\Service\BlogService;
 use App\View\SmartyView;
 use Smarty;
@@ -65,10 +65,10 @@ final class Kernel
         $builder->register(Smarty::class, Smarty::class)->setFactory([self::class, 'createSmarty'])->setArguments([$this->rootDir, $smarty])->setPublic(true);
         $builder->register(\App\View\AssetManager::class)->setAutowired(true)->setArguments([$this->rootDir . '/public/build'])->setPublic(true);
         $builder->register(SmartyView::class)->setAutowired(true)->setPublic(true);
-        $builder->register(MySqlCategoryRepository::class)->setAutowired(true)->setPublic(true);
-        $builder->register(MySqlArticleRepository::class)->setAutowired(true)->setPublic(true);
-        $builder->setAlias(CategoryRepositoryInterface::class, MySqlCategoryRepository::class)->setPublic(true);
-        $builder->setAlias(ArticleRepositoryInterface::class, MySqlArticleRepository::class)->setPublic(true);
+        $builder->register(PostgresCategoryRepository::class)->setAutowired(true)->setPublic(true);
+        $builder->register(PostgresArticleRepository::class)->setAutowired(true)->setPublic(true);
+        $builder->setAlias(CategoryRepositoryInterface::class, PostgresCategoryRepository::class)->setPublic(true);
+        $builder->setAlias(ArticleRepositoryInterface::class, PostgresArticleRepository::class)->setPublic(true);
         foreach ([BlogService::class, HomeController::class, CategoryController::class, ArticleController::class, \App\Requests\CategoryIndexRequest::class] as $service) {
             $builder->register($service)->setAutowired(true)->setPublic(true);
         }
@@ -78,7 +78,7 @@ final class Kernel
 
     private static function createConnection(array $config): Connection
     {
-        return DriverManager::getConnection(['dbname' => $config['database'], 'user' => $config['username'], 'password' => $config['password'], 'host' => $config['host'], 'port' => $config['port'], 'driver' => 'pdo_mysql', 'charset' => $config['charset']]);
+        return DriverManager::getConnection(['dbname' => $config['database'], 'user' => $config['username'], 'password' => $config['password'], 'host' => $config['host'], 'port' => $config['port'], 'driver' => 'pdo_pgsql']);
     }
 
     private static function createValidator(): ValidatorInterface

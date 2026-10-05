@@ -1,6 +1,6 @@
 # Simple PHP MVC Blog
 
-Plain PHP 8.1+ MVC blog using Smarty, Symfony Components, Doctrine DBAL, MySQL and Vite.
+Plain PHP 8.1+ MVC blog using Smarty, Symfony Components, Doctrine DBAL, PostgreSQL and Vite.
 
 ## Local Docker setup
 
@@ -17,6 +17,8 @@ docker compose run --rm vite npm run build
 Open http://localhost:8080.
 
 The application uses Symfony HttpFoundation, Routing, DependencyInjection, Validator and Cache as independent components. It does not use Symfony Framework.
+
+PostgreSQL is used through Doctrine DBAL and the `pdo_pgsql` driver.
 
 ## Database migrations
 

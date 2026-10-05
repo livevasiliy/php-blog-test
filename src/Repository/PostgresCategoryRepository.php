@@ -7,7 +7,7 @@ namespace App\Repository;
 use App\DTO\{ArticleDto, CategoryDto};
 use Doctrine\DBAL\Connection;
 
-final class MySqlCategoryRepository implements CategoryRepositoryInterface
+final class PostgresCategoryRepository implements CategoryRepositoryInterface
 {
     public function __construct(private readonly Connection $connection)
     {
@@ -36,10 +36,10 @@ final class MySqlCategoryRepository implements CategoryRepositoryInterface
     }
     private function mapCategory(array $row): CategoryDto
     {
-        return new CategoryDto((int)$row['id'], $row['name'], $row['slug'], $row['description']);
+        return new CategoryDto((int) $row['id'], $row['name'], $row['slug'], $row['description']);
     }
     private function mapArticle(array $row): ArticleDto
     {
-        return new ArticleDto((int)$row['id'], $row['image'], $row['title'], $row['slug'], $row['description'], $row['content'], (int)$row['views_count'], $row['published_at']);
+        return new ArticleDto((int) $row['id'], $row['image'], $row['title'], $row['slug'], $row['description'], $row['content'], (int) $row['views_count'], $row['published_at']);
     }
 }

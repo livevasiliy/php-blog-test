@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Exceptions\NotFoundException;
 use App\Http\HtmlResponseFactory;
 use App\Requests\CategoryIndexRequest;
 use App\Service\BlogService;
@@ -25,10 +24,6 @@ final class CategoryController implements RequestHandlerInterface
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $page = $this->blog->category((string) $request->getAttribute('slug'), $this->request->data($request));
-        if (!$page) {
-            throw new NotFoundException('Category not found');
-        }
-
         return $this->html->create($this->view->render('pages/category', ['page' => $page]));
     }
 }

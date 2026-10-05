@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\DTO\{ArticlePageDto, CategoryPageDto, PaginationDto};
+use App\Exceptions\NotFoundException;
 use App\Repository\{ArticleRepositoryInterface, CategoryRepositoryInterface};
 
 final class BlogService
@@ -16,20 +17,20 @@ final class BlogService
     {
         return $this->categories->withLatestArticles();
     }
-    public function category(string $slug, array $filters): ?CategoryPageDto
+    public function category(string $slug, array $filters): CategoryPageDto
     {
         $category = $this->categories->findBySlug($slug);
         if (!$category) {
-            return null;
+            throw new NotFoundException('Category not found');
         }
         $result = $this->categories->articles($category, $filters['page'], 9, $filters['sort'], $filters['direction']);
         return new CategoryPageDto($category, $result['items'], new PaginationDto($filters['page'], 9, $result['total'], $filters['sort'], $filters['direction']));
     }
-    public function article(string $slug): ?ArticlePageDto
+    public function article(string $slug): ArticlePageDto
     {
         $article = $this->articles->findBySlug($slug);
         if (!$article) {
-            return null;
+            throw new NotFoundException('Article not found');
         }
         $this->articles->incrementViews($article->id);
         return new ArticlePageDto($article, $this->articles->similar($article));

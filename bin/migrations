@@ -12,6 +12,8 @@ use Doctrine\Migrations\DependencyFactory;
 use Doctrine\Migrations\Tools\Console\Command;
 use Symfony\Component\Console\Application;
 
+Dotenv\Dotenv::createImmutable(dirname(__DIR__))->safeLoad();
+
 $config = require dirname(__DIR__) . '/config/database.php';
 $connection = DriverManager::getConnection([
     'dbname' => $config['database'],

@@ -8,6 +8,7 @@ use App\Controller\{ArticleController, CategoryController, HomeController};
 use App\Repository\{ArticleRepositoryInterface, CategoryRepositoryInterface, PostgresArticleRepository, PostgresCategoryRepository};
 use App\Service\BlogService;
 use App\View\SmartyView;
+use Dotenv\Dotenv;
 use Smarty;
 use Doctrine\DBAL\{Connection, DriverManager};
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -26,6 +27,7 @@ final class Kernel
 
     public function __construct(private readonly string $rootDir)
     {
+        Dotenv::createImmutable($this->rootDir)->safeLoad();
         $this->container = $this->buildContainer();
     }
 
@@ -76,17 +78,17 @@ final class Kernel
         return $builder;
     }
 
-    private static function createConnection(array $config): Connection
+    public static function createConnection(array $config): Connection
     {
         return DriverManager::getConnection(['dbname' => $config['database'], 'user' => $config['username'], 'password' => $config['password'], 'host' => $config['host'], 'port' => $config['port'], 'driver' => 'pdo_pgsql']);
     }
 
-    private static function createValidator(): ValidatorInterface
+    public static function createValidator(): ValidatorInterface
     {
         return Validation::createValidatorBuilder()->enableAttributeMapping()->getValidator();
     }
 
-    private static function createSmarty(string $root, array $config): Smarty
+    public static function createSmarty(string $root, array $config): Smarty
     {
         $engine = new Smarty();
         $engine->setTemplateDir($root . '/' . $config['template_dir'])->setCompileDir($root . '/' . $config['compile_dir'])->setCacheDir($root . '/' . $config['cache_dir']);

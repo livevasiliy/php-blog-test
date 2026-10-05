@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Exceptions\NotFoundException;
 use App\Service\BlogService;
 use App\Http\HtmlResponseFactory;
 use App\View\PhpView;
@@ -23,8 +24,10 @@ final class ArticleController implements RequestHandlerInterface
     {
         $page = $this->blog->article((string) $request->getAttribute('slug'));
 
-        return $page
-            ? $this->html->create($this->view->render('pages/article', ['page' => $page]))
-            : $this->html->create($this->view->render('pages/404'), 404);
+        if (!$page) {
+            throw new NotFoundException('Article not found');
+        }
+
+        return $this->html->create($this->view->render('pages/article', ['page' => $page]));
     }
 }

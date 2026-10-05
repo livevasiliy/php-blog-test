@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Exceptions\ValidationException;
+use App\Exceptions\NotFoundException;
 use App\Http\HtmlResponseFactory;
 use App\Requests\CategoryIndexRequest;
 use App\Service\BlogService;
@@ -24,14 +24,11 @@ final class CategoryController implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        try {
-            $page = $this->blog->category((string) $request->getAttribute('slug'), $this->request->data($request));
-        } catch (ValidationException $e) {
-            return $this->html->create($this->view->render('pages/422', ['errors' => $e->errors()]), 422);
+        $page = $this->blog->category((string) $request->getAttribute('slug'), $this->request->data($request));
+        if (!$page) {
+            throw new NotFoundException('Category not found');
         }
 
-        return $page
-            ? $this->html->create($this->view->render('pages/category', ['page' => $page]))
-            : $this->html->create($this->view->render('pages/404'), 404);
+        return $this->html->create($this->view->render('pages/category', ['page' => $page]));
     }
 }

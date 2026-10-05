@@ -6,7 +6,7 @@ namespace App\Providers;
 
 use App\Controller\{ArticleController, CategoryController, HomeController};
 use App\DI\Container;
-use App\Http\{HtmlResponseFactory, ResponseEmitter, ResponseFactory, ServerRequestFactory, StreamFactory};
+use App\Http\{ExceptionResponseHandler, HtmlResponseFactory, ResponseEmitter, ResponseFactory, ServerRequestFactory, StreamFactory};
 use App\Http\Middleware\ErrorMiddleware;
 use App\Requests\CategoryIndexRequest;
 use App\Repository\{ArticleRepositoryInterface, CategoryRepositoryInterface, PostgresArticleRepository, PostgresCategoryRepository};
@@ -28,9 +28,10 @@ final class ApplicationServiceProvider implements ServiceProvider
         $container->singleton(ResponseFactory::class, static fn (): ResponseFactory => new ResponseFactory());
         $container->singleton(StreamFactory::class, static fn (): StreamFactory => new StreamFactory());
         $container->singleton(HtmlResponseFactory::class, static fn (Container $c): HtmlResponseFactory => new HtmlResponseFactory($c->get(ResponseFactory::class), $c->get(StreamFactory::class)));
+        $container->singleton(ExceptionResponseHandler::class, static fn (Container $c): ExceptionResponseHandler => new ExceptionResponseHandler($c->get(HtmlResponseFactory::class), $c->get(PhpView::class)));
         $container->singleton(ServerRequestFactory::class, static fn (): ServerRequestFactory => new ServerRequestFactory());
         $container->singleton(ResponseEmitter::class, static fn (): ResponseEmitter => new ResponseEmitter());
-        $container->singleton(ErrorMiddleware::class, static fn (Container $c): ErrorMiddleware => new ErrorMiddleware($c->get(HtmlResponseFactory::class)));
+        $container->singleton(ErrorMiddleware::class, static fn (Container $c): ErrorMiddleware => new ErrorMiddleware($c->get(ExceptionResponseHandler::class)));
         $container->singleton(CategoryIndexRequest::class, static fn (): CategoryIndexRequest => new CategoryIndexRequest());
         $container->singleton(PDO::class, fn (): PDO => $this->createConnection($database));
         $container->singleton(AssetManager::class, static fn (): AssetManager => new AssetManager($rootDir . '/public/build'));

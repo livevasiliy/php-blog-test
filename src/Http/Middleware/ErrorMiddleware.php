@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
-use App\Http\{ResponseFactory, StreamFactory};
+use App\Http\HtmlResponseFactory;
 use Psr\Http\Message\{ServerRequestInterface, ResponseInterface};
 use Psr\Http\Server\{MiddlewareInterface, RequestHandlerInterface};
 use Throwable;
@@ -12,8 +12,7 @@ use Throwable;
 final class ErrorMiddleware implements MiddlewareInterface
 {
     public function __construct(
-        private readonly ResponseFactory $responses,
-        private readonly StreamFactory $streams,
+        private readonly HtmlResponseFactory $html,
     ) {
     }
 
@@ -25,9 +24,7 @@ final class ErrorMiddleware implements MiddlewareInterface
             $status = $exception->getCode() === 404 ? 404 : 500;
             $body = $status === 404 ? '<h1>404 Not Found</h1>' : '<h1>500 Internal Server Error</h1>';
 
-            return $this->responses->create($status)
-                ->withHeader('Content-Type', 'text/html; charset=UTF-8')
-                ->withBody($this->streams->create($body));
+            return $this->html->create($body, $status);
         }
     }
 }

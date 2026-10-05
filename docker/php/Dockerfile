@@ -1,5 +1,6 @@
 FROM php:8.4-fpm-alpine
-RUN apk add --no-cache --virtual .pgsql-build-deps postgresql-dev $PHPIZE_DEPS \
+RUN apk add --no-cache libpq \
+    && apk add --no-cache --virtual .pgsql-build-deps postgresql-dev $PHPIZE_DEPS \
     && docker-php-ext-install pdo_pgsql \
     && apk del .pgsql-build-deps
 WORKDIR /var/www/html

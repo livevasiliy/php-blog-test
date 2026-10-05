@@ -4,6 +4,12 @@ services:
       context: .
       dockerfile: docker/php/Dockerfile
     working_dir: /var/www/html
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_DATABASE: ${DB_DATABASE:-blog}
+      DB_USERNAME: ${DB_USERNAME:-blog}
+      DB_PASSWORD: ${DB_PASSWORD:-blog}
     volumes:
       - ./:/var/www/html
     depends_on:
@@ -12,7 +18,7 @@ services:
   nginx:
     image: nginx:1.27-alpine
     ports:
-      - "8080:80"
+      - "${APP_PORT:-8080}:80"
     volumes:
       - ./:/var/www/html:ro
       - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro

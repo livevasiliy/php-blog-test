@@ -16,6 +16,8 @@ docker compose run --rm vite npm run build
 
 Open http://localhost:8080.
 
+Set `APP_PORT` in `.env` when port 8080 is already occupied.
+
 The application uses Symfony HttpFoundation, Routing, DependencyInjection, Validator and Cache as independent components. It does not use Symfony Framework.
 
 PostgreSQL is used through Doctrine DBAL and the `pdo_pgsql` driver.

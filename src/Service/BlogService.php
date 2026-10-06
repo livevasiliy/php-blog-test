@@ -7,11 +7,15 @@ namespace App\Service;
 use App\DTO\{ArticlePageDto, CategoryIndexDto, CategoryPageDto, HomePageDto, PaginationDto};
 use App\Framework\Exceptions\NotFoundException;
 use App\Repository\{ArticleRepositoryInterface, CategoryRepositoryInterface};
+use App\Validation\CategoryIndexValidator;
 
 final class BlogService
 {
-    public function __construct(private readonly CategoryRepositoryInterface $categories, private readonly ArticleRepositoryInterface $articles)
-    {
+    public function __construct(
+        private readonly CategoryRepositoryInterface $categories,
+        private readonly ArticleRepositoryInterface $articles,
+        private readonly CategoryIndexValidator $categoryIndexValidator,
+    ) {
     }
 
     public function home(): HomePageDto
@@ -21,6 +25,7 @@ final class BlogService
 
     public function category(string $slug, CategoryIndexDto $filters): CategoryPageDto
     {
+        $this->categoryIndexValidator->validate($filters);
         $category = $this->categories->findBySlug($slug);
         if (!$category) {
             throw new NotFoundException('Category not found');

@@ -15,6 +15,11 @@
   },
   "scripts": {
     "migrate": "php bin/migrations migrate",
-    "seed": "php database/seed.php"
+    "seed": "php database/seed.php",
+    "format": "php-cs-fixer fix",
+    "format:check": "php-cs-fixer check --diff --verbose"
+  },
+  "require-dev": {
+    "friendsofphp/php-cs-fixer": "^3.0"
   }
 }

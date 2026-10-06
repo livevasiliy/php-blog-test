@@ -20,33 +20,40 @@ abstract class Psr7Message implements MessageInterface
             $this->headers[$name] = array_map('strval', (array) $value);
         }
     }
+
     public function getProtocolVersion(): string
     {
         return $this->protocol;
     }
+
     public function withProtocolVersion(string $version): MessageInterface
     {
         $clone = clone $this;
         $clone->protocol = $version;
         return $clone;
     }
+
     public function getHeaders(): array
     {
         return $this->headers;
     }
+
     public function hasHeader(string $name): bool
     {
         return $this->headerName($name) !== null;
     }
+
     public function getHeader(string $name): array
     {
         $key = $this->headerName($name);
         return $key === null ? [] : $this->headers[$key];
     }
+
     public function getHeaderLine(string $name): string
     {
         return implode(',', $this->getHeader($name));
     }
+
     public function withHeader(string $name, $value): MessageInterface
     {
         $clone = clone $this;
@@ -54,6 +61,7 @@ abstract class Psr7Message implements MessageInterface
         $clone->headers[$key] = array_map('strval', (array) $value);
         return $clone;
     }
+
     public function withAddedHeader(string $name, $value): MessageInterface
     {
         $clone = clone $this;
@@ -61,6 +69,7 @@ abstract class Psr7Message implements MessageInterface
         $clone->headers[$key] = array_merge($clone->headers[$key] ?? [], array_map('strval', (array) $value));
         return $clone;
     }
+
     public function withoutHeader(string $name): MessageInterface
     {
         $clone = clone $this;
@@ -69,16 +78,19 @@ abstract class Psr7Message implements MessageInterface
             unset($clone->headers[$key]);
         } return $clone;
     }
+
     public function getBody(): StreamInterface
     {
         return $this->body;
     }
+
     public function withBody(StreamInterface $body): MessageInterface
     {
         $clone = clone $this;
         $clone->body = $body;
         return $clone;
     }
+
     private function headerName(string $name): ?string
     {
         foreach (array_keys($this->headers) as $key) {

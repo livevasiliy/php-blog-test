@@ -11,6 +11,7 @@ final class PostgresCategoryRepository implements CategoryRepositoryInterface
     public function __construct(private readonly \PDO $connection)
     {
     }
+
     public function withLatestArticles(int $limit = 3): array
     {
         $categories = $this->connection->query('SELECT c.* FROM categories c WHERE EXISTS (SELECT 1 FROM article_category ac JOIN articles a ON a.id = ac.article_id WHERE ac.category_id = c.id AND a.published_at <= CURRENT_TIMESTAMP) ORDER BY c.name')->fetchAll();
@@ -22,6 +23,7 @@ final class PostgresCategoryRepository implements CategoryRepositoryInterface
             return new Category($category->id, $category->name, $category->slug, $category->description, array_map([$this, 'mapArticle'], $articles));
         }, $categories);
     }
+
     public function findBySlug(string $slug): ?Category
     {
         $statement = $this->connection->prepare('SELECT * FROM categories WHERE slug = :slug LIMIT 1');
@@ -29,6 +31,7 @@ final class PostgresCategoryRepository implements CategoryRepositoryInterface
         $row = $statement->fetch();
         return $row ? $this->mapCategory($row) : null;
     }
+
     public function articles(Category $category, int $page, int $perPage, string $sort, string $direction): array
     {
         $order = $sort === 'views_count' ? 'a.views_count' : 'a.published_at';
@@ -44,10 +47,12 @@ final class PostgresCategoryRepository implements CategoryRepositoryInterface
         $items = $statement->fetchAll();
         return ['items' => array_map([$this, 'mapArticle'], $items), 'total' => $total];
     }
+
     private function mapCategory(array $row): Category
     {
         return new Category((int) $row['id'], $row['name'], $row['slug'], $row['description']);
     }
+
     private function mapArticle(array $row): Article
     {
         return new Article((int) $row['id'], $row['image'], $row['title'], $row['slug'], $row['description'], $row['content'], (int) $row['views_count'], $row['published_at']);

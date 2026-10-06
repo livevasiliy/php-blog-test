@@ -20,5 +20,8 @@ return (new Config())
     ->setRiskyAllowed(false)
     ->setRules([
         '@PSR12' => true,
+        'class_attributes_separation' => [
+            'elements' => ['method' => 'one'],
+        ],
     ])
     ->setFinder($finder);

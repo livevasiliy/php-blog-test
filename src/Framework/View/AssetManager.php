@@ -11,6 +11,7 @@ final class AssetManager
     public function __construct(private readonly string $buildDir)
     {
     }
+
     public function css(): string
     {
         return $this->css ??= (function (): string {

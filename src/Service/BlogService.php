@@ -13,10 +13,12 @@ final class BlogService
     public function __construct(private readonly CategoryRepositoryInterface $categories, private readonly ArticleRepositoryInterface $articles)
     {
     }
+
     public function home(): array
     {
         return $this->categories->withLatestArticles();
     }
+
     public function category(string $slug, CategoryIndexDto $filters): CategoryPageDto
     {
         $category = $this->categories->findBySlug($slug);
@@ -26,6 +28,7 @@ final class BlogService
         $result = $this->categories->articles($category, $filters->page, 9, $filters->sort, $filters->direction);
         return new CategoryPageDto($category, $result['items'], new PaginationDto($filters->page, 9, $result['total'], $filters->sort, $filters->direction));
     }
+
     public function article(string $slug): ArticlePageDto
     {
         $article = $this->articles->findBySlug($slug);

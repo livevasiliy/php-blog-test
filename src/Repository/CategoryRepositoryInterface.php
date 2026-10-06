@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
-use App\Model\{Article, Category};
+use App\Model\Category;
 
 interface CategoryRepositoryInterface
 {

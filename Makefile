@@ -30,7 +30,7 @@ seed:
 	$(COMPOSE) exec app php database/seed.php
 
 assets:
-	$(COMPOSE) run --rm vite sh -c 'npm install && npm run build'
+	$(COMPOSE) run --rm vite sh -c 'npm ci && npm run build'
 
 logs:
 	$(COMPOSE) logs -f

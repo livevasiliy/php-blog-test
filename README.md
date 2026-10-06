@@ -85,7 +85,7 @@ composer format:check
 ## Frontend
 
 ```bash
-npm install
+npm ci
 npm run dev
 npm run build
 ```

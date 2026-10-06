@@ -1,22 +1,22 @@
-# Simple PHP MVC Blog
+# Простой PHP MVC-блог
 
-Plain PHP 8.1+ MVC blog using PDO, PostgreSQL and Vite.
+Простой MVC-блог на чистом PHP 8.1+ с использованием PDO, PostgreSQL и Vite.
 
-## Local Docker setup
+## Локальный запуск через Docker
 
-The complete first-time setup is available through the Makefile:
+Для полного разворачивания проекта с нуля выполните:
 
 ```bash
 make setup
 ```
 
-This creates `.env` from `.env.example`, builds the PHP image, runs `composer install`, starts the application services, applies migrations, seeds the database and builds frontend assets.
+Команда создаст `.env` из `.env.example`, соберёт PHP-образ, выполнит `composer install`, запустит сервисы приложения, применит миграции, добавит тестовые данные и соберёт frontend-ассеты.
 
-The individual setup steps are:
+Если нужно выполнить шаги отдельно:
 
 ```bash
 cp .env.example .env
-# Set DB_USERNAME and a strong random DB_PASSWORD in .env before starting.
+# При необходимости измените DB_USERNAME и задайте надёжный DB_PASSWORD.
 make build
 make up
 make migrate
@@ -24,38 +24,63 @@ make seed
 make assets
 ```
 
-Open http://localhost:8080.
+После запуска приложение доступно по адресу http://localhost:8080.
 
-The PHP image runs `composer install` during the `app` image build. Composer dependencies are kept in a named Docker volume so the project bind mount does not hide them.
+Во время сборки PHP-образа выполняется `composer install`. Composer-зависимости хранятся в отдельном Docker volume, поэтому монтирование проекта не скрывает папку `vendor`.
 
-PostgreSQL is available only inside the Compose network. The Vite development server is bound to localhost.
+PostgreSQL доступен только внутри сети Docker Compose. Vite-сервер разработки привязан к localhost.
 
-PostgreSQL credentials are applied when the data volume is initialized. Rotating `DB_USERNAME` or `DB_PASSWORD` for an existing volume requires updating the database role first, or deliberately recreating the disposable local volume.
+Учётные данные PostgreSQL применяются при первоначальной инициализации volume. Для изменения `DB_USERNAME` или `DB_PASSWORD` у существующего volume потребуется сначала изменить роль в базе или пересоздать локальный volume.
 
-Set `APP_PORT` in `.env` when port 8080 is already occupied.
+Если порт 8080 уже занят, задайте другой `APP_PORT` в `.env`.
 
-Useful commands: `make down`, `make restart`, `make dev`, `make logs`, `make shell` and `make composer ARGS="validate"`.
+Полезные команды:
 
-The application uses native PHP code for HTTP, routing, dependency injection, validation, views and database access. PostgreSQL is accessed through the native `pdo_pgsql` driver. Composer is used for development tooling such as PHP CS Fixer.
+```bash
+make down
+make restart
+make dev
+make logs
+make shell
+make composer ARGS="validate"
+```
 
-PSR-7 and PSR-15 contracts and their runtime implementations are maintained locally under `src/Framework/Psr` and `src/Framework/Http`; the application has no external Composer packages.
+## Архитектура приложения
 
-## Application providers and routes
+Ядро загружает отдельные сервис-провайдеры. Framework-провайдеры отвечают за HTTP, представления и подключение PDO, а application-провайдеры — за репозитории, блоговые сервисы, контроллеры и маршруты.
 
-The kernel loads focused service providers from `src/Providers`: HTTP, views, repositories, blog services, controllers and routes are registered separately. Add HTTP routes in `routes/web.php` through the injected `Router` and resolve dependencies through the injected `Container`.
+HTTP-маршруты добавляются в `routes/web.php` через внедрённый `Router`. Зависимости можно получать через внедрённый `Container`.
 
-## Database migrations
+Приложение использует собственные реализации HTTP, маршрутизации, dependency injection, валидации, представлений и доступа к базе данных. PostgreSQL подключается через нативный драйвер `pdo_pgsql`. Composer используется для инструментов разработки, например PHP CS Fixer.
+
+Контракты PSR-7 и PSR-15, а также их runtime-реализации находятся в `src/Framework/Psr` и `src/Framework/Http`.
+
+## Миграции и тестовые данные
+
+Через Makefile:
+
+```bash
+make migrate
+make seed
+```
+
+Или напрямую в локальном окружении:
 
 ```bash
 php bin/migrations
 php database/seed.php
 ```
 
-SQL migrations are kept in `database/migrations` and are applied by the small native-PHP runner.
+SQL-миграции находятся в `database/migrations` и применяются небольшим нативным PHP-скриптом.
 
-## Code style
+## Стиль кода
 
-Code follows PSR-12 formatting. Run `composer format` to apply formatting or `composer format:check` to verify it.
+Код форматируется по PSR-12:
+
+```bash
+composer format
+composer format:check
+```
 
 ## Frontend
 
@@ -65,4 +90,4 @@ npm run dev
 npm run build
 ```
 
-The production CSS manifest is read by `App\View\AssetManager` and injected into native PHP layouts.
+Production-манифест CSS читается через `App\Framework\View\AssetManager` и подключается в нативные PHP-шаблоны.

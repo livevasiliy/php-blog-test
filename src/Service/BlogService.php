@@ -4,9 +4,14 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use App\DTO\{ArticlePageDto, CategoryIndexDto, CategoryPageDto, HomePageDto, PaginationDto};
+use App\DTO\ArticlePageDto;
+use App\DTO\CategoryIndexDto;
+use App\DTO\CategoryPageDto;
+use App\DTO\HomePageDto;
+use App\DTO\PaginationDto;
 use App\Framework\Exceptions\NotFoundException;
-use App\Repository\{ArticleRepositoryInterface, CategoryRepositoryInterface};
+use App\Repository\ArticleRepositoryInterface;
+use App\Repository\CategoryRepositoryInterface;
 use App\Validation\CategoryIndexValidator;
 
 final class BlogService

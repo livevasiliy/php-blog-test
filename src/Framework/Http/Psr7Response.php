@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace App\Framework\Http;
 
-use Psr\Http\Message\{ResponseInterface, StreamInterface};
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamInterface;
 
 final class Psr7Response extends Psr7Message implements ResponseInterface
 {

@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Framework\Http\Middleware;
 
-use Psr\Http\Message\{ResponseInterface, ServerRequestInterface};
-use Psr\Http\Server\{MiddlewareInterface, RequestHandlerInterface};
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 final class MiddlewareStack implements RequestHandlerInterface
 {

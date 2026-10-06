@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace App\Framework\Http;
 
 use App\Framework\Exceptions\NotFoundException;
-use Psr\Http\Message\{ResponseInterface, ServerRequestInterface};
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use RuntimeException;
 

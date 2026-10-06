@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
-use App\Controller\{ArticleController, CategoryController, HomeController};
+use App\Controller\ArticleController;
+use App\Controller\CategoryController;
+use App\Controller\HomeController;
 use App\Framework\DI\Container;
 use App\Framework\Providers\ServiceProvider;
 use App\Requests\CategoryIndexRequest;

@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace App\Framework\Http\Middleware;
 
 use App\Framework\Http\ExceptionResponseHandler;
-use Psr\Http\Message\{ServerRequestInterface, ResponseInterface};
-use Psr\Http\Server\{MiddlewareInterface, RequestHandlerInterface};
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Throwable;
 
 final class ErrorMiddleware implements MiddlewareInterface

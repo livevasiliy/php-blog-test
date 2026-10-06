@@ -7,7 +7,8 @@ namespace App\Controller;
 use App\Requests\CategoryIndexRequest;
 use App\Service\BlogService;
 use App\Framework\View\ViewResponseFactory;
-use Psr\Http\Message\{ResponseInterface, ServerRequestInterface};
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 final class CategoryController implements RequestHandlerInterface

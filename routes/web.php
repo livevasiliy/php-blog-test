@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
-use App\Controller\{ArticleController, CategoryController, HomeController};
+use App\Controller\ArticleController;
+use App\Controller\CategoryController;
+use App\Controller\HomeController;
 use App\Framework\DI\Container;
 use App\Framework\Http\Router;
 

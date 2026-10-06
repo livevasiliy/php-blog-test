@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Framework\Http;
 
-use Psr\Http\Message\{RequestInterface, ServerRequestInterface, UriInterface};
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\UriInterface;
 
 final class Psr7ServerRequest extends Psr7Message implements ServerRequestInterface
 {

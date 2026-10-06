@@ -6,7 +6,10 @@ namespace App\Providers;
 
 use App\Framework\DI\Container;
 use App\Framework\Providers\ServiceProvider;
-use App\Repository\{ArticleRepositoryInterface, CategoryRepositoryInterface, PostgresArticleRepository, PostgresCategoryRepository};
+use App\Repository\ArticleRepositoryInterface;
+use App\Repository\CategoryRepositoryInterface;
+use App\Repository\PostgresArticleRepository;
+use App\Repository\PostgresCategoryRepository;
 use PDO;
 
 final class RepositoryServiceProvider implements ServiceProvider

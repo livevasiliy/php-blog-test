@@ -7,7 +7,8 @@ namespace App\Providers;
 use App\Framework\DI\Container;
 use App\Framework\Providers\ServiceProvider;
 use App\Service\BlogService;
-use App\Repository\{ArticleRepositoryInterface, CategoryRepositoryInterface};
+use App\Repository\ArticleRepositoryInterface;
+use App\Repository\CategoryRepositoryInterface;
 use App\Validation\CategoryIndexValidator;
 
 final class BlogServiceProvider implements ServiceProvider

@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace App\Framework\Http;
 
-use App\Framework\Exceptions\{NotFoundException, ValidationException};
+use App\Framework\Exceptions\NotFoundException;
+use App\Framework\Exceptions\ValidationException;
 use App\Framework\View\ViewResponseFactory;
 use Psr\Http\Message\ResponseInterface;
 use RuntimeException;

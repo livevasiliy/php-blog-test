@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
-use App\Model\{Article, Category};
+use App\Model\Article;
+use App\Model\Category;
 
 final class PostgresCategoryRepository implements CategoryRepositoryInterface
 {

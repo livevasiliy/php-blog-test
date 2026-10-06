@@ -23,5 +23,8 @@ return (new Config())
         'class_attributes_separation' => [
             'elements' => ['method' => 'one'],
         ],
+        'single_import_per_statement' => [
+            'group_to_single_imports' => true,
+        ],
     ])
     ->setFinder($finder);

@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace App\Framework\Http;
 
-use Psr\Http\Message\{MessageInterface, StreamInterface};
+use Psr\Http\Message\MessageInterface;
+use Psr\Http\Message\StreamInterface;
 
 abstract class Psr7Message implements MessageInterface
 {

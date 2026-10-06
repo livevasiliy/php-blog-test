@@ -20,10 +20,10 @@ final class ExceptionResponseHandler
     public function handle(Throwable $exception): ResponseInterface
     {
         return match (true) {
-            $exception instanceof ValidationException => $this->render('pages/422', ['errors' => $exception->errors()], 422),
+            $exception instanceof ValidationException => $this->render('pages/422', ['errors' => $exception->errors()], HttpStatus::UNPROCESSABLE_ENTITY),
             $exception instanceof NotFoundException,
-            $exception instanceof RuntimeException && $exception->getCode() === 404 => $this->render('pages/404', [], 404),
-            default => $this->render('pages/500', [], 500),
+            $exception instanceof RuntimeException && $exception->getCode() === HttpStatus::NOT_FOUND => $this->render('pages/404', [], HttpStatus::NOT_FOUND),
+            default => $this->render('pages/500', [], HttpStatus::INTERNAL_SERVER_ERROR),
         };
     }
 

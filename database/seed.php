@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+const SEED_FAILURE_EXIT_CODE = 1;
+
 $root = dirname(__DIR__);
 require $root . '/vendor/autoload.php';
 require $root . '/bootstrap/bootstrap.php';
@@ -16,5 +18,5 @@ try {
 } catch (Throwable $exception) {
     $db->rollBack();
     fwrite(STDERR, $exception->getMessage() . "\n");
-    exit(1);
+    exit(SEED_FAILURE_EXIT_CODE);
 }

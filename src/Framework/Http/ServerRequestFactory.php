@@ -8,6 +8,8 @@ use Psr\Http\Message\ServerRequestInterface;
 
 final class ServerRequestFactory
 {
+    private const SERVER_HEADER_PREFIX_LENGTH = 5;
+
     public function fromGlobals(): ServerRequestInterface
     {
         $uri = $_SERVER['REQUEST_URI'] ?? '/';
@@ -28,7 +30,7 @@ final class ServerRequestFactory
         $headers = [];
         foreach ($_SERVER as $name => $value) {
             if (str_starts_with($name, 'HTTP_')) {
-                $header = str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))));
+                $header = str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, self::SERVER_HEADER_PREFIX_LENGTH)))));
                 $headers[$header] = $value;
             }
         }

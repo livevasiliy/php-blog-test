@@ -8,7 +8,9 @@ use Psr\Http\Message\{MessageInterface, StreamInterface};
 
 abstract class Psr7Message implements MessageInterface
 {
-    protected string $protocol = '1.1';
+    private const DEFAULT_PROTOCOL_VERSION = '1.1';
+
+    protected string $protocol = self::DEFAULT_PROTOCOL_VERSION;
     /** @var array<string, list<string>> */
     protected array $headers = [];
     protected StreamInterface $body;

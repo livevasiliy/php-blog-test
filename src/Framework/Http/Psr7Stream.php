@@ -9,6 +9,8 @@ use RuntimeException;
 
 final class Psr7Stream implements StreamInterface
 {
+    private const STREAM_START_OFFSET = 0;
+
     /** @var resource|null */
     private $resource;
 
@@ -72,7 +74,7 @@ final class Psr7Stream implements StreamInterface
 
     public function rewind(): void
     {
-        $this->seek(0);
+        $this->seek(self::STREAM_START_OFFSET);
     }
 
     public function isWritable(): bool

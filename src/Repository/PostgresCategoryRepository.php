@@ -8,11 +8,14 @@ use App\Model\{Article, Category};
 
 final class PostgresCategoryRepository implements CategoryRepositoryInterface
 {
+    private const FIRST_PAGE = 1;
+    private const SINGLE_RESULT_LIMIT = 1;
+
     public function __construct(private readonly \PDO $connection)
     {
     }
 
-    public function withLatestArticles(int $limit = 3): array
+    public function withLatestArticles(int $limit = self::DEFAULT_LATEST_LIMIT): array
     {
         $categories = $this->connection->query('SELECT c.* FROM categories c WHERE EXISTS (SELECT 1 FROM article_category ac JOIN articles a ON a.id = ac.article_id WHERE ac.category_id = c.id AND a.published_at <= CURRENT_TIMESTAMP) ORDER BY c.name')->fetchAll();
         return array_map(function (array $row) use ($limit): Category {
@@ -26,7 +29,7 @@ final class PostgresCategoryRepository implements CategoryRepositoryInterface
 
     public function findBySlug(string $slug): ?Category
     {
-        $statement = $this->connection->prepare('SELECT * FROM categories WHERE slug = :slug LIMIT 1');
+        $statement = $this->connection->prepare('SELECT * FROM categories WHERE slug = :slug LIMIT ' . self::SINGLE_RESULT_LIMIT);
         $statement->execute(['slug' => $slug]);
         $row = $statement->fetch();
         return $row ? $this->mapCategory($row) : null;
@@ -42,7 +45,7 @@ final class PostgresCategoryRepository implements CategoryRepositoryInterface
         $statement = $this->connection->prepare("SELECT a.* FROM articles a JOIN article_category ac ON ac.article_id = a.id WHERE ac.category_id = :id AND a.published_at <= CURRENT_TIMESTAMP ORDER BY {$order} {$direction}, a.id DESC LIMIT :limit OFFSET :offset");
         $statement->bindValue('id', $category->id, \PDO::PARAM_INT);
         $statement->bindValue('limit', $perPage, \PDO::PARAM_INT);
-        $statement->bindValue('offset', ($page - 1) * $perPage, \PDO::PARAM_INT);
+        $statement->bindValue('offset', ($page - self::FIRST_PAGE) * $perPage, \PDO::PARAM_INT);
         $statement->execute();
         $items = $statement->fetchAll();
         return ['items' => array_map([$this, 'mapArticle'], $items), 'total' => $total];

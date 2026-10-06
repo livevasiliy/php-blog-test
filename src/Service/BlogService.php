@@ -11,6 +11,8 @@ use App\Validation\CategoryIndexValidator;
 
 final class BlogService
 {
+    private const ARTICLES_PER_PAGE = 9;
+
     public function __construct(
         private readonly CategoryRepositoryInterface $categories,
         private readonly ArticleRepositoryInterface $articles,
@@ -30,8 +32,8 @@ final class BlogService
         if (!$category) {
             throw new NotFoundException('Category not found');
         }
-        $result = $this->categories->articles($category, $filters->page, 9, $filters->sort, $filters->direction);
-        return new CategoryPageDto($category, $result['items'], new PaginationDto($filters->page, 9, $result['total'], $filters->sort, $filters->direction));
+        $result = $this->categories->articles($category, $filters->page, self::ARTICLES_PER_PAGE, $filters->sort, $filters->direction);
+        return new CategoryPageDto($category, $result['items'], new PaginationDto($filters->page, self::ARTICLES_PER_PAGE, $result['total'], $filters->sort, $filters->direction));
     }
 
     public function article(string $slug): ArticlePageDto

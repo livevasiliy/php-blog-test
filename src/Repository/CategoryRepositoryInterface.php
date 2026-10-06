@@ -8,8 +8,10 @@ use App\Model\Category;
 
 interface CategoryRepositoryInterface
 {
+    public const DEFAULT_LATEST_LIMIT = 3;
+
     /** @return Category[] */
-    public function withLatestArticles(int $limit = 3): array;
+    public function withLatestArticles(int $limit = self::DEFAULT_LATEST_LIMIT): array;
 
     public function findBySlug(string $slug): ?Category;
 

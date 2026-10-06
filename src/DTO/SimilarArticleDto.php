@@ -8,7 +8,9 @@ use App\Model\Article;
 
 final readonly class SimilarArticleDto
 {
-    public function __construct(public Article $article, public int $sharedCategories = 0)
+    private const NO_SHARED_CATEGORIES = 0;
+
+    public function __construct(public Article $article, public int $sharedCategories = self::NO_SHARED_CATEGORIES)
     {
     }
 }

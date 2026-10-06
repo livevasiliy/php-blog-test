@@ -29,7 +29,7 @@ final class CategoryIndexValidator extends AbstractValidator
         if (!in_array($filters->direction, self::DIRECTIONS, true)) {
             $errors['direction'][] = 'Допустимое направление: asc или desc.';
         }
-        if ($filters->page < 1 || $filters->page > self::MAX_PAGE) {
+        if ($filters->page < CategoryIndexDto::FIRST_PAGE || $filters->page > self::MAX_PAGE) {
             $errors['page'][] = 'Страница должна быть числом от 1 до ' . self::MAX_PAGE . '.';
         }
         $this->throwIfInvalid($errors);

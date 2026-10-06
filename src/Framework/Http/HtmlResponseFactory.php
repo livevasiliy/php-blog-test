@@ -14,7 +14,7 @@ final class HtmlResponseFactory
     ) {
     }
 
-    public function create(string $content, int $status = 200): ResponseInterface
+    public function create(string $content, int $status = HttpStatus::OK): ResponseInterface
     {
         return $this->responses->create($status)
             ->withHeader('Content-Type', 'text/html; charset=UTF-8')

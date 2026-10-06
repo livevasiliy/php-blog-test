@@ -8,6 +8,8 @@ use Psr\Http\Message\ResponseInterface;
 
 final class ResponseEmitter
 {
+    private const READ_CHUNK_SIZE = 8192;
+
     public function emit(ResponseInterface $response): void
     {
         http_response_code($response->getStatusCode());
@@ -23,7 +25,7 @@ final class ResponseEmitter
             $body->rewind();
         }
         while (!$body->eof()) {
-            echo $body->read(8192);
+            echo $body->read(self::READ_CHUNK_SIZE);
         }
     }
 }

@@ -11,7 +11,7 @@ final class Psr7Response extends Psr7Message implements ResponseInterface
     private int $status;
     private string $reason;
 
-    public function __construct(int $status = 200, array $headers = [], ?StreamInterface $body = null, string $reason = '')
+    public function __construct(int $status = HttpStatus::OK, array $headers = [], ?StreamInterface $body = null, string $reason = '')
     {
         parent::__construct($body, $headers);
         $this->status = $status;

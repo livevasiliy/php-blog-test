@@ -8,6 +8,13 @@ use PDO;
 
 final class ArticleSeeder
 {
+    private const ADDITIONAL_ARTICLES_PER_CATEGORY = 10;
+    private const FIRST_DEMO_NUMBER = 1;
+    private const BASE_VIEWS = 40;
+    private const VIEWS_STEP = 13;
+    private const IMAGE_COUNT = 3;
+    private const FIRST_IMAGE_NUMBER = 1;
+
     public function __construct(private readonly PDO $db)
     {
     }
@@ -27,11 +34,11 @@ final class ArticleSeeder
             'devops' => 'Инструменты DevOps',
         ];
         foreach ($additionalTopics as $category => $topic) {
-            for ($number = 1; $number <= 10; $number++) {
+            for ($number = self::FIRST_DEMO_NUMBER; $number <= self::ADDITIONAL_ARTICLES_PER_CATEGORY; $number++) {
                 $articles[] = [
                     sprintf('demo-%s-%02d', $category, $number),
                     sprintf('%s: пример %d', $topic, $number),
-                    40 + ($number * 13),
+                    self::BASE_VIEWS + ($number * self::VIEWS_STEP),
                     [$category],
                 ];
             }
@@ -41,7 +48,8 @@ final class ArticleSeeder
         $deleteLinks = $this->db->prepare('DELETE FROM article_category WHERE article_id = :id');
         $link = $this->db->prepare('INSERT INTO article_category (article_id, category_id) VALUES (:article, :category) ON CONFLICT DO NOTHING');
         foreach ($articles as $index => [$slug, $title, $views, $keys]) {
-            $articleStatement->execute(['image' => '/assets/images/article-' . (($index % 3) + 1) . '.svg', 'title' => $title, 'slug' => $slug, 'description' => 'Короткое описание статьи «' . $title . '».', 'content' => "Материал посвящён теме «{$title}».\n\nДемонстрационный текст статьи для проверки MVC-блога.", 'views' => $views, 'published' => date('Y-m-d H:i:s', strtotime('-' . $index . ' days'))]);
+            $imageNumber = ($index % self::IMAGE_COUNT) + self::FIRST_IMAGE_NUMBER;
+            $articleStatement->execute(['image' => '/assets/images/article-' . $imageNumber . '.svg', 'title' => $title, 'slug' => $slug, 'description' => 'Короткое описание статьи «' . $title . '».', 'content' => "Материал посвящён теме «{$title}».\n\nДемонстрационный текст статьи для проверки MVC-блога.", 'views' => $views, 'published' => date('Y-m-d H:i:s', strtotime('-' . $index . ' days'))]);
             $findArticle->execute(['slug' => $slug]);
             $id = (int) $findArticle->fetchColumn();
             $deleteLinks->execute(['id' => $id]);

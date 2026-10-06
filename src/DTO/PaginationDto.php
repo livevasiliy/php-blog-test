@@ -6,6 +6,8 @@ namespace App\DTO;
 
 final readonly class PaginationDto
 {
+    private const FIRST_PAGE = 1;
+
     public function __construct(
         public int $currentPage,
         public int $perPage,
@@ -17,6 +19,6 @@ final readonly class PaginationDto
 
     public function totalPages(): int
     {
-        return max(1, (int) ceil($this->total / $this->perPage));
+        return max(self::FIRST_PAGE, (int) ceil($this->total / $this->perPage));
     }
 }

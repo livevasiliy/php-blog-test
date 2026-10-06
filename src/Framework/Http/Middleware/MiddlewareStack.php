@@ -9,6 +9,9 @@ use Psr\Http\Server\{MiddlewareInterface, RequestHandlerInterface};
 
 final class MiddlewareStack implements RequestHandlerInterface
 {
+    private const FIRST_MIDDLEWARE_INDEX = 0;
+    private const NEXT_MIDDLEWARE_OFFSET = 1;
+
     /** @param list<MiddlewareInterface> $middleware */
     public function __construct(
         private readonly array $middleware,
@@ -18,7 +21,7 @@ final class MiddlewareStack implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        return $this->dispatch($request, 0);
+        return $this->dispatch($request, self::FIRST_MIDDLEWARE_INDEX);
     }
 
     /** @internal Used by the request handler created for the next middleware. */
@@ -28,7 +31,7 @@ final class MiddlewareStack implements RequestHandlerInterface
             return $this->handler->handle($request);
         }
 
-        $next = new class ($this, $index + 1) implements RequestHandlerInterface {
+        $next = new class ($this, $index + self::NEXT_MIDDLEWARE_OFFSET) implements RequestHandlerInterface {
             public function __construct(
                 private readonly MiddlewareStack $stack,
                 private readonly int $index,

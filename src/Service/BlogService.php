@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use App\DTO\{ArticlePageDto, CategoryIndexDto, CategoryPageDto, PaginationDto};
+use App\DTO\{ArticlePageDto, CategoryIndexDto, CategoryPageDto, HomePageDto, PaginationDto};
 use App\Framework\Exceptions\NotFoundException;
 use App\Repository\{ArticleRepositoryInterface, CategoryRepositoryInterface};
 
@@ -14,9 +14,9 @@ final class BlogService
     {
     }
 
-    public function home(): array
+    public function home(): HomePageDto
     {
-        return $this->categories->withLatestArticles();
+        return new HomePageDto($this->categories->withLatestArticles());
     }
 
     public function category(string $slug, CategoryIndexDto $filters): CategoryPageDto

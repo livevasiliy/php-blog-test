@@ -19,6 +19,8 @@ final class HomeController implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        return $this->views->create('pages/home', ['categories' => $this->blog->home()]);
+        $page = $this->blog->home();
+
+        return $this->views->create('pages/home', ['categories' => $page->categories]);
     }
 }

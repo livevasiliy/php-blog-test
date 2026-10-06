@@ -17,7 +17,19 @@ final class Psr7Response extends Psr7Message implements ResponseInterface
         $this->status = $status;
         $this->reason = $reason;
     }
-    public function getStatusCode(): int { return $this->status; }
-    public function withStatus(int $code, string $reasonPhrase = ''): ResponseInterface { $clone = clone $this; $clone->status = $code; $clone->reason = $reasonPhrase; return $clone; }
-    public function getReasonPhrase(): string { return $this->reason; }
+    public function getStatusCode(): int
+    {
+        return $this->status;
+    }
+    public function withStatus(int $code, string $reasonPhrase = ''): ResponseInterface
+    {
+        $clone = clone $this;
+        $clone->status = $code;
+        $clone->reason = $reasonPhrase;
+        return $clone;
+    }
+    public function getReasonPhrase(): string
+    {
+        return $this->reason;
+    }
 }

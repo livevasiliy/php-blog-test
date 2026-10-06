@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Model\{Article, Category};
+
 final class PostgresCategoryRepository implements CategoryRepositoryInterface
 {
     public function __construct(private readonly \PDO $connection)

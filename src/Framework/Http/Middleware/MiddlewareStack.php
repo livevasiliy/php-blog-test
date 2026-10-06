@@ -28,7 +28,7 @@ final class MiddlewareStack implements RequestHandlerInterface
             return $this->handler->handle($request);
         }
 
-        $next = new class($this, $index + 1) implements RequestHandlerInterface {
+        $next = new class ($this, $index + 1) implements RequestHandlerInterface {
             public function __construct(
                 private readonly MiddlewareStack $stack,
                 private readonly int $index,

@@ -12,6 +12,7 @@ services:
       DB_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD must be set in .env}
     volumes:
       - ./:/var/www/html
+      - composer_vendor:/var/www/html/vendor
     depends_on:
       db:
         condition: service_healthy
@@ -46,4 +47,5 @@ services:
       - ./:/var/www/html
 
 volumes:
+  composer_vendor:
   postgres_data:

@@ -12,7 +12,7 @@ final class CategoryIndexRequest
 {
     private const MAX_PAGE = 100;
 
-    public function data(ServerRequestInterface $request): array
+    public function data(ServerRequestInterface $request): CategoryIndexDto
     {
         $query = $request->getQueryParams();
         $sort = (string) ($query['sort'] ?? 'published_at');
@@ -32,6 +32,6 @@ final class CategoryIndexRequest
         if ($errors) {
             throw new ValidationException($errors);
         }
-        return ['sort' => $sort, 'direction' => $direction, 'page' => $page];
+        return new CategoryIndexDto($sort, $direction, $page);
     }
 }

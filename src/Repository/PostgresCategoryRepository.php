@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
-use App\DTO\{ArticleDto, CategoryDto};
+use App\Model\{Article, Category};
 final class PostgresCategoryRepository implements CategoryRepositoryInterface
 {
     public function __construct(private readonly \PDO $connection)
@@ -13,22 +13,22 @@ final class PostgresCategoryRepository implements CategoryRepositoryInterface
     public function withLatestArticles(int $limit = 3): array
     {
         $categories = $this->connection->query('SELECT c.* FROM categories c WHERE EXISTS (SELECT 1 FROM article_category ac JOIN articles a ON a.id = ac.article_id WHERE ac.category_id = c.id AND a.published_at <= CURRENT_TIMESTAMP) ORDER BY c.name')->fetchAll();
-        return array_map(function (array $row) use ($limit): CategoryDto {
+        return array_map(function (array $row) use ($limit): Category {
             $category = $this->mapCategory($row);
             $statement = $this->connection->prepare('SELECT a.* FROM articles a JOIN article_category ac ON ac.article_id = a.id WHERE ac.category_id = :id AND a.published_at <= CURRENT_TIMESTAMP ORDER BY a.published_at DESC LIMIT ' . (int) $limit);
             $statement->execute(['id' => $category->id]);
             $articles = $statement->fetchAll();
-            return new CategoryDto($category->id, $category->name, $category->slug, $category->description, array_map([$this, 'mapArticle'], $articles));
+            return new Category($category->id, $category->name, $category->slug, $category->description, array_map([$this, 'mapArticle'], $articles));
         }, $categories);
     }
-    public function findBySlug(string $slug): ?CategoryDto
+    public function findBySlug(string $slug): ?Category
     {
         $statement = $this->connection->prepare('SELECT * FROM categories WHERE slug = :slug LIMIT 1');
         $statement->execute(['slug' => $slug]);
         $row = $statement->fetch();
         return $row ? $this->mapCategory($row) : null;
     }
-    public function articles(CategoryDto $category, int $page, int $perPage, string $sort, string $direction): array
+    public function articles(Category $category, int $page, int $perPage, string $sort, string $direction): array
     {
         $order = $sort === 'views_count' ? 'a.views_count' : 'a.published_at';
         $direction = strtoupper($direction) === 'ASC' ? 'ASC' : 'DESC';
@@ -43,12 +43,12 @@ final class PostgresCategoryRepository implements CategoryRepositoryInterface
         $items = $statement->fetchAll();
         return ['items' => array_map([$this, 'mapArticle'], $items), 'total' => $total];
     }
-    private function mapCategory(array $row): CategoryDto
+    private function mapCategory(array $row): Category
     {
-        return new CategoryDto((int) $row['id'], $row['name'], $row['slug'], $row['description']);
+        return new Category((int) $row['id'], $row['name'], $row['slug'], $row['description']);
     }
-    private function mapArticle(array $row): ArticleDto
+    private function mapArticle(array $row): Article
     {
-        return new ArticleDto((int) $row['id'], $row['image'], $row['title'], $row['slug'], $row['description'], $row['content'], (int) $row['views_count'], $row['published_at']);
+        return new Article((int) $row['id'], $row['image'], $row['title'], $row['slug'], $row['description'], $row['content'], (int) $row['views_count'], $row['published_at']);
     }
 }

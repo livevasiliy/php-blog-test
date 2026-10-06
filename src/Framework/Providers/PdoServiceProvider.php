@@ -19,7 +19,13 @@ final class PdoServiceProvider implements ServiceProvider
         $database = require $this->rootDir . '/config/database.php';
 
         $container->singleton(PdoFactory::class, static fn (): PdoFactory => new PdoFactory());
-        $container->singleton(PDO::class, static fn (Container $c): PDO => $c->get(PdoFactory::class)->create($database));
+        $container->singleton(PDO::class, static fn (Container $c): PDO => $c->get(PdoFactory::class)->create(
+            host: $database['host'],
+            port: $database['port'],
+            database: $database['database'],
+            username: $database['username'],
+            password: $database['password'],
+        ));
     }
 
     public function boot(Container $container): void

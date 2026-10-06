@@ -6,6 +6,7 @@ namespace App\Validation;
 
 use App\DTO\CategoryIndexDto;
 use App\Framework\Validation\AbstractValidator;
+use App\Framework\Pagination\PaginationDto;
 
 /** @implements \App\Framework\Validation\ValidatorInterface<CategoryIndexDto> */
 final class CategoryIndexValidator extends AbstractValidator
@@ -29,7 +30,7 @@ final class CategoryIndexValidator extends AbstractValidator
         if (!in_array($filters->direction, self::DIRECTIONS, true)) {
             $errors['direction'][] = 'Допустимое направление: asc или desc.';
         }
-        if ($filters->page < CategoryIndexDto::FIRST_PAGE || $filters->page > self::MAX_PAGE) {
+        if ($filters->page < PaginationDto::FIRST_PAGE || $filters->page > self::MAX_PAGE) {
             $errors['page'][] = 'Страница должна быть числом от 1 до ' . self::MAX_PAGE . '.';
         }
         $this->throwIfInvalid($errors);

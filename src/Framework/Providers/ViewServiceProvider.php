@@ -2,11 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Providers;
+namespace App\Framework\Providers;
 
 use App\Framework\DI\Container;
 use App\Framework\Http\HtmlResponseFactory;
-use App\Framework\Providers\ServiceProvider;
 use App\Framework\View\AssetManager;
 use App\Framework\View\PhpView;
 use App\Framework\View\ViewResponseFactory;

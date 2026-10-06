@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\DTO;
 
+use App\Framework\Pagination\PaginationDto;
 use App\Model\Category;
 
 final readonly class CategoryPageDto

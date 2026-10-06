@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Providers;
+namespace App\Framework\Providers;
 
 use App\Framework\DI\Container;
 use App\Framework\Http\ExceptionResponseHandler;
@@ -12,7 +12,6 @@ use App\Framework\Http\ResponseFactory;
 use App\Framework\Http\ServerRequestFactory;
 use App\Framework\Http\StreamFactory;
 use App\Framework\Http\Middleware\ErrorMiddleware;
-use App\Framework\Providers\ServiceProvider;
 use App\Framework\View\ViewResponseFactory;
 
 final class HttpServiceProvider implements ServiceProvider

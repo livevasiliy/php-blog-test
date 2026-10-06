@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Requests;
 
 use App\DTO\CategoryIndexDto;
+use App\Framework\Pagination\PaginationDto;
 use Psr\Http\Message\ServerRequestInterface;
 
 final class CategoryIndexRequest
@@ -16,7 +17,7 @@ final class CategoryIndexRequest
         $query = $request->getQueryParams();
         $sort = $query['sort'] ?? 'published_at';
         $direction = $query['direction'] ?? 'desc';
-        $rawPage = $query['page'] ?? CategoryIndexDto::FIRST_PAGE;
+        $rawPage = $query['page'] ?? PaginationDto::FIRST_PAGE;
         $page = filter_var(is_scalar($rawPage) ? $rawPage : null, FILTER_VALIDATE_INT);
 
         return new CategoryIndexDto(

@@ -1,1 +1,0 @@
-<?php ob_start(); ?><section class="hero"><h1>Внутренняя ошибка сервера</h1><p>Попробуйте повторить запрос позже.</p><a href="/">На главную</a></section><?php $content = (string) ob_get_clean(); require __DIR__ . '/../layouts/main.php';

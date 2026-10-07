@@ -51,7 +51,7 @@ make composer ARGS="validate"
 
 HTTP-маршруты добавляются в `routes/web.php` через внедрённый `Router`. Зависимости можно получать через внедрённый `Container`.
 
-Приложение использует собственные реализации HTTP, маршрутизации, dependency injection, валидации, представлений и доступа к базе данных. PostgreSQL подключается через нативный драйвер `pdo_pgsql`. Composer используется для инструментов разработки, например PHP CS Fixer.
+Приложение использует собственные реализации HTTP, маршрутизации, dependency injection, валидации и доступа к базе данных. Для представлений используется Smarty, а PostgreSQL подключается через нативный драйвер `pdo_pgsql`. Composer используется для зависимостей и инструментов разработки, например PHP CS Fixer.
 
 Контракты PSR-7 и PSR-15, а также их runtime-реализации находятся в `src/Framework/Psr` и `src/Framework/Http`.
 
@@ -90,4 +90,4 @@ npm run dev
 npm run build
 ```
 
-Production-манифест CSS читается через `App\Framework\View\AssetManager` и подключается в нативные PHP-шаблоны.
+Production-манифест CSS читается через `App\Framework\View\AssetManager` и подключается в Smarty-шаблоны.

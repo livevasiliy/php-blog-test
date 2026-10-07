@@ -11,7 +11,7 @@ use Psr\Http\Message\ResponseInterface;
 final class ViewResponseFactory
 {
     public function __construct(
-        private readonly PhpView $view,
+        private readonly SmartyView $view,
         private readonly HtmlResponseFactory $html,
     ) {
     }
